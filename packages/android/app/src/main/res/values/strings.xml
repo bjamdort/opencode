@@ -4,4 +4,22 @@
     <string name="bundle_error">Could not load the bundled OpenCode interface. Tap Reload to try again.</string>
     <string name="no_browser">No app can open this link.</string>
     <string name="choose_file">Choose attachment</string>
+    <string name="push_title">Push notifications</string>
+    <string name="push_explanation">Receive session updates from your NAS while this app is closed. Delivery uses Google Firebase. After enabling, share this phone’s registration file back to your computer through LocalSend to finish NAS registration.</string>
+    <string name="push_ready">This phone is ready for push notifications. Share the registration file with your computer through LocalSend so it can be added to your NAS relay. Repeat this step if you reinstall the app or the registration changes.</string>
+    <string name="push_not_configured">This APK has no Firebase configuration. Install your Firebase-enabled build to use push notifications.</string>
+    <string name="push_enable">Enable</string>
+    <string name="push_disable">Disable</string>
+    <string name="push_close">Close</string>
+    <string name="push_android_settings">Android settings</string>
+    <string name="push_registering">Registering for push notifications…</string>
+    <string name="push_registration_error">Could not register this phone. Check your internet connection and Google Play services, then try again.</string>
+    <string name="push_permission_denied">Notifications are blocked. You can enable them in Android settings.</string>
+    <string name="push_share">Share registration</string>
+    <string name="push_share_title">OpenCode notification registration</string>
+    <string name="push_share_error">Could not share the registration file. Try again.</string>
+    <string name="push_channel">OpenCode activity</string>
+    <string name="push_channel_description">Session updates, permission requests, and questions</string>
+    <string name="push_default_title">OpenCode needs attention</string>
+    <string name="push_default_body">Open the app to review your session.</string>
 </resources>

@@ -1,0 +1,5 @@
+__pycache__/
+devices.json
+*service-account*.json
+*.key
+*registration*.json

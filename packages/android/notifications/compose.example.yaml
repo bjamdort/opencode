@@ -1,0 +1,51 @@
+# Add this service under the existing OpenCode Compose file's services key.
+services:
+  notification-relay:
+    image: local/opencode-notifications:0.1.0
+    build:
+      context: ./notifications
+    container_name: opencode-notifications
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      TZ: Europe/Amsterdam
+      OPENCODE_URL: http://devbox:4096
+      OPENCODE_PUBLIC_URL: https://opencode.example.com
+      OPENCODE_LABEL: NAS
+    volumes:
+      - type: bind
+        source: /home/bjamdort/opencode/server-password
+        target: /run/secrets/opencode-password
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /home/bjamdort/opencode/notifications
+        target: /config
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=8m,mode=1777
+    depends_on:
+      devbox:
+        condition: service_healthy
+    mem_limit: 192m
+    cpus: 0.25
+    pids_limit: 64
+    healthcheck:
+      test: ["CMD", "python", "relay.py", "--healthcheck"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

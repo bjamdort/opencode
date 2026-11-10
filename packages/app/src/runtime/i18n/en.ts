@@ -583,6 +583,9 @@ export const dict = {
   "notification.session.error.fallbackDescription": "An error occurred",
 
   "home.title": "Home",
+  "settings.notifications.android.title": "Push notifications",
+  "settings.notifications.android.description":
+    "Receive updates while the app is closed. Enable Android notifications and register this phone with your NAS relay. The web notification switches below do not change NAS push preferences.",
   "home.offline.title": "OpenCode is ready",
   "home.offline.description":
     "Your interface is available offline. Connect a computer when you want to work with its projects and sessions.",

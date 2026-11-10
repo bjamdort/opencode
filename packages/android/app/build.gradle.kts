@@ -4,6 +4,11 @@ plugins {
     id("com.android.application")
 }
 
+// Personal Firebase configuration stays local. Generic/CI builds still open offline without it.
+if (file("google-services.json").isFile) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "dev.bjamdort.opencode.remote"
     compileSdk = 36
@@ -12,8 +17,8 @@ android {
         applicationId = "dev.bjamdort.opencode.remote"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.2.0"
     }
 
     compileOptions {
@@ -24,6 +29,9 @@ android {
 
 dependencies {
     implementation("androidx.webkit:webkit:1.15.0")
+    implementation("androidx.core:core:1.17.0")
+    implementation(platform("com.google.firebase:firebase-bom:35.1.0"))
+    implementation("com.google.firebase:firebase-messaging")
     testImplementation("junit:junit:4.13.2")
 }
 

@@ -1,10 +1,11 @@
-import { Component } from "solid-js"
+import { Component, Show } from "solid-js"
 import { Select } from "@opencode/ui/select"
 import { Switch } from "@opencode/ui/switch"
 import { useLanguage } from "@/runtime/i18n/language"
 import { useSettings } from "@/settings/model"
 import { SettingsList } from "@/settings/list"
 import { SettingsRow } from "@/settings/row"
+import { AndroidNotifications } from "./android"
 import {
   createSoundSettingsController,
   soundOptions,
@@ -78,6 +79,19 @@ export const SettingsNotifications: Component = () => {
       </div>
 
       <div class="settings-tab-body settings-tab-body--sectioned">
+        <Show when={import.meta.env.MODE === "android"}>
+          <div class="settings-section">
+            <h3 class="settings-section-title">{language.t("settings.notifications.android.title")}</h3>
+            <SettingsList>
+              <SettingsRow
+                title={language.t("settings.notifications.android.title")}
+                description={language.t("settings.notifications.android.description")}
+              >
+                <AndroidNotifications />
+              </SettingsRow>
+            </SettingsList>
+          </div>
+        </Show>
         <div class="settings-section">
           <h3 class="settings-section-title">{language.t("settings.general.section.notifications")}</h3>
           <SettingsList>

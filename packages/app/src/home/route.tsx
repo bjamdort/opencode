@@ -6,6 +6,7 @@ import { Show } from "solid-js"
 import { useLanguage } from "@/runtime/i18n/language"
 import { DialogServer } from "@/servers/connect/dialog"
 import { useSettingsDialog } from "@/settings/command"
+import { AndroidNotifications } from "@/settings/notifications/android"
 import { createHomeController } from "./model"
 import { createHomeProjectsController } from "./projects/controller"
 import { HomeUtilityNav } from "./projects/view"
@@ -88,6 +89,7 @@ function OfflineHome() {
         <Button variant="outline" onClick={settings}>
           {language.t("command.settings.open")}
         </Button>
+        <AndroidNotifications />
       </div>
     </div>
   )

@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!requirements.txt
+!relay.py
+!test_relay.py
+!register_device.py
+!test_registration.py

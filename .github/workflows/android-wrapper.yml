@@ -39,6 +39,8 @@ jobs:
       - name: Install web app dependencies
         working-directory: .
         run: bun install --frozen-lockfile
+      - name: Test notification relay and registration importer
+        run: python3 -m unittest discover -s notifications -v
       # GitHub's Ubuntu runner includes JDK 17 and the Android SDK.
       - name: Test and build APK
         run: JAVA_HOME="$JAVA_HOME_17_X64" ./gradlew --no-daemon testDebugUnitTest lintDebug verifyBundledAssets

@@ -45,7 +45,22 @@ Alternatively, bind OpenCode to its Tailscale IP and connect to its HTTP address
 - Android builds disable the browser service worker: APK assets already provide offline UI availability, without an old worker retaining assets from a previous APK.
 - The UI updates when you install a newer APK, not when a remote server updates. Keep the APK and your computers on compatible OpenCode versions.
 
-Native code only hosts the assets in WebView, handles system/keyboard insets, Android Back, external links, and attachment selection. It has no native JavaScript bridge, VPN, camera/microphone permissions, notification service, or background OpenCode server. App data is excluded from backup and device transfer.
+Native code hosts the assets in WebView and handles system/keyboard insets, Android Back, external links, attachment selection, and optional push delivery. It has no native JavaScript bridge, VPN, camera/microphone permissions, or background OpenCode server. App data is excluded from backup and device transfer.
+
+## Optional Android push notifications
+
+Personal Firebase builds add a native notification service, but do not add an OpenCode server or require notification setup to open the app. The bundled app's **Push notifications** action opens the Android opt-in dialog; Google registration does not start until you enable it. Analytics collection is disabled.
+
+1. Add your Android Firebase app configuration as `app/google-services.json` before building. The file is ignored by Git. **Never use a Firebase service-account private key here**: that key belongs only on the NAS.
+2. Install the Firebase-enabled APK, open **Push notifications** on the offline home screen or under **Settings → Notifications**, and enable notifications.
+3. Tap **Share registration**, choose LocalSend, and send `opencode-phone-registration.json` to your computer. The file contains a device token, not a server password; keep it private.
+4. Import that file into the NAS relay using `notifications/register_device.py`, described in its README. No registration endpoint or new public port is needed.
+
+Firebase builds use high-priority data messages. The app checks its own opt-in and Android permission before posting a notification, including when backgrounded. **Disable** stops local delivery and requests deletion of the FCM token. Remove stale tokens from the NAS registry as needed. Android force-stop prevents delivery until the app is opened again, and device battery policies can delay messages.
+
+Tapping a notification opens the matching server/session in the bundled web app. Add that server to the app first, using the same URL as the relay's `OPENCODE_PUBLIC_URL`; the notification never adds a server or credentials automatically. Repeat registration after reinstalling or if your phone's FCM token changes. The web UI's notification switches do not currently filter NAS pushes.
+
+Generic/CI builds without `google-services.json` remain usable offline, but show that push is unconfigured. Keep using the local build/signing key for updates to the personal APK.
 
 ## Build on this machine
 

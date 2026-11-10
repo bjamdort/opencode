@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -83,6 +84,11 @@ public final class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 if (!request.isForMainFrame()) return false;
+                if ("opencode-notifications:settings".equals(request.getUrl().toString())
+                        && BundledSite.asset(view.getUrl(), false) != null) {
+                    PushSettings.show(MainActivity.this);
+                    return true;
+                }
                 if (BundledSite.asset(request.getUrl().toString(), false) != null) return false;
                 String scheme = request.getUrl().getScheme();
                 if ("http".equals(scheme) || "https".equals(scheme) || "mailto".equals(scheme)) {
@@ -150,8 +156,36 @@ public final class MainActivity extends Activity {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                     OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::back);
         }
+        if (notificationIntent(getIntent())) return;
         if (state != null && web.restoreState(state) != null) return;
         web.loadUrl(BundledSite.HOME.toString());
+    }
+
+    private boolean notificationIntent(Intent intent) {
+        String target = PushRoute.href(intent.getStringExtra("server_url"), intent.getStringExtra("session_id"));
+        if (target == null) return false;
+        intent.removeExtra("server_url");
+        intent.removeExtra("session_id");
+        web.loadUrl(target);
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        notificationIntent(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int request, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(request, permissions, results);
+        if (request != PushSettings.PERMISSION_REQUEST) return;
+        if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
+            PushSettings.enable(this);
+            return;
+        }
+        Toast.makeText(this, R.string.push_permission_denied, Toast.LENGTH_LONG).show();
     }
 
     private void openExternal(Uri uri) {
