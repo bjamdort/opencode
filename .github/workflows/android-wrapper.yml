@@ -1,0 +1,40 @@
+name: Android wrapper
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - packages/android/**
+      - .github/workflows/android-wrapper.yml
+  pull_request:
+    paths:
+      - packages/android/**
+      - .github/workflows/android-wrapper.yml
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/android
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      # GitHub's Ubuntu runner includes JDK 17 and the Android SDK.
+      - name: Test and build APK
+        run: JAVA_HOME="$JAVA_HOME_17_X64" ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: opencode-remote-debug
+          path: packages/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+      - name: Upload test and lint reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: android-reports
+          path: packages/android/app/build/reports/
