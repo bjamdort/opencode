@@ -22,33 +22,33 @@ const sentry =
       })
     : false
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     desktopPlugin,
     icons(channel),
-    serviceWorker(fileURLToPath(new URL("./dist", import.meta.url))),
+    mode !== "android" && serviceWorker(fileURLToPath(new URL("./dist", import.meta.url))),
     sentry,
-  ] as any,
+  ],
   server: {
     host: "0.0.0.0",
     allowedHosts: true,
     port: 3000,
   },
   build: {
-    ...(process.env.VITE_OPENCODE_TEST_FIXTURES === "1"
-      ? {
-          rolldownOptions: {
+    rolldownOptions:
+      process.env.VITE_OPENCODE_TEST_FIXTURES === "1"
+        ? {
             input: [
               "index.html",
               "e2e/utils/settings-wsl.html",
               "e2e/utils/app-direction.html",
               "e2e/utils/windows-menu.html",
             ],
-          },
-        }
-      : {}),
-    assetsDir: "_assets",
+          }
+        : undefined,
+    // Android's asset packager ignores directories beginning with an underscore.
+    assetsDir: mode === "android" ? "web-assets" : "_assets",
     target: "esnext",
-    sourcemap: true,
+    sourcemap: mode !== "android",
   },
-})
+}))

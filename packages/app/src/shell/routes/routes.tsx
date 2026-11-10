@@ -120,7 +120,10 @@ function AppLayout(props: ParentProps) {
   }
 
   return (
-    <Show when={servers.list.length > 0 && !signedOut()} fallback={<ConnectServerScreen url={signedOut()?.http.url} />}>
+    <Show
+      when={import.meta.env.MODE === "android" || (servers.list.length > 0 && !signedOut())}
+      fallback={<ConnectServerScreen url={signedOut()?.http.url} />}
+    >
       <LayoutProvider>
         <SettingsSurfaceProvider>
           <PluginAttachment>

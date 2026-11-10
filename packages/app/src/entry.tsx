@@ -52,7 +52,8 @@ const clearAuthToken = () => {
 // package.json carries the last stable version on every channel, so the server's build passes its own release.
 const web = createWebPlatform(import.meta.env.VITE_OPENCODE_VERSION ?? pkg.version)
 
-if (import.meta.env.PROD && "serviceWorker" in navigator) {
+// Android serves the complete UI from its APK; a service worker could retain an older APK's assets.
+if (import.meta.env.PROD && import.meta.env.MODE !== "android" && "serviceWorker" in navigator) {
   window.addEventListener("load", () => void navigator.serviceWorker.register("/sw.js"), { once: true })
 }
 

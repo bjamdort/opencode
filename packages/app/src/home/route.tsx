@@ -1,6 +1,11 @@
 import { ScrollView } from "@opencode/ui/scroll-view"
+import { Button } from "@opencode/ui/button"
+import { useDialog } from "@opencode/ui/context/dialog"
 import { createMediaQuery } from "@solid-primitives/media"
 import { Show } from "solid-js"
+import { useLanguage } from "@/runtime/i18n/language"
+import { DialogServer } from "@/servers/connect/dialog"
+import { useSettingsDialog } from "@/settings/command"
 import { createHomeController } from "./model"
 import { createHomeProjectsController } from "./projects/controller"
 import { HomeUtilityNav } from "./projects/view"
@@ -47,7 +52,12 @@ export function Home() {
           <Show when={!mobile()}>
             <HomeProjects projects={projects} scroll={scroll} />
           </Show>
-          <HomeSessions sessions={sessions} search={search} scroll={scroll} />
+          <Show
+            when={import.meta.env.MODE === "android" && home.server.list().length === 0}
+            fallback={<HomeSessions sessions={sessions} search={search} scroll={scroll} />}
+          >
+            <OfflineHome />
+          </Show>
         </div>
       </ScrollView>
       <div class="hidden shrink-0 px-3 py-2 md:block lg:hidden">
@@ -57,6 +67,27 @@ export function Home() {
           onOpenHelp={projects.utility.help}
           language={projects.copy.language}
         />
+      </div>
+    </div>
+  )
+}
+
+function OfflineHome() {
+  const language = useLanguage()
+  const dialog = useDialog()
+  const settings = useSettingsDialog()
+
+  return (
+    <div class="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-6 py-12 text-center">
+      <h1 class="text-16-medium text-v2-text-text-base">{language.t("home.offline.title")}</h1>
+      <p class="max-w-sm text-v2-text-text-muted">{language.t("home.offline.description")}</p>
+      <div class="flex flex-wrap justify-center gap-2">
+        <Button onClick={() => dialog.show(() => <DialogServer mode="add" />)}>
+          {language.t("dialog.server.add.button")}
+        </Button>
+        <Button variant="outline" onClick={settings}>
+          {language.t("command.settings.open")}
+        </Button>
       </div>
     </div>
   )

@@ -5,10 +5,20 @@ on:
   push:
     paths:
       - packages/android/**
+      - packages/app/**
+      - packages/ui/**
+      - packages/session-ui/**
+      - packages/gui-plugins/**
+      - bun.lock
       - .github/workflows/android-wrapper.yml
   pull_request:
     paths:
       - packages/android/**
+      - packages/app/**
+      - packages/ui/**
+      - packages/session-ui/**
+      - packages/gui-plugins/**
+      - bun.lock
       - .github/workflows/android-wrapper.yml
 
 permissions:
@@ -23,9 +33,15 @@ jobs:
         working-directory: packages/android
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: package.json
+      - name: Install web app dependencies
+        working-directory: .
+        run: bun install --frozen-lockfile
       # GitHub's Ubuntu runner includes JDK 17 and the Android SDK.
       - name: Test and build APK
-        run: JAVA_HOME="$JAVA_HOME_17_X64" ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug
+        run: JAVA_HOME="$JAVA_HOME_17_X64" ./gradlew --no-daemon testDebugUnitTest lintDebug verifyBundledAssets
       - name: Upload APK
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

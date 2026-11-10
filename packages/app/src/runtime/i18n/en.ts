@@ -583,6 +583,9 @@ export const dict = {
   "notification.session.error.fallbackDescription": "An error occurred",
 
   "home.title": "Home",
+  "home.offline.title": "OpenCode is ready",
+  "home.offline.description":
+    "Your interface is available offline. Connect a computer when you want to work with its projects and sessions.",
   "home.projects": "Projects",
   "home.projects.all": "All projects",
   "home.project.add": "Add project",
